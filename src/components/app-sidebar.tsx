@@ -14,6 +14,8 @@ import {
 } from "./ui/sidebar";
 import { ColorModeToggle } from "./color-mode-toggle";
 import { MainNavigation } from "./main-navigation";
+import { fetchChannels } from "@/api/channels";
+import { useQuery } from "@tanstack/react-query";
 
 // Menu items.
 const items = [
@@ -45,6 +47,11 @@ const items = [
 ];
 
 export function AppSidebar() {
+  const { data: channels } = useQuery({
+    queryKey: ["channels"],
+    queryFn: fetchChannels,
+  });
+
   return (
     <Sidebar>
       <SidebarHeader>
@@ -55,11 +62,11 @@ export function AppSidebar() {
           <SidebarGroupLabel>Active cases</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items?.map((item) => (
-                <SidebarMenuItem key={item.title}>
+              {channels?.map((channel) => (
+                <SidebarMenuItem key={channel.id}>
                   <SidebarMenuButton asChild>
-                    <a href={item.url}>
-                      <span>{item.title}</span>
+                    <a href={`/channels/${channel.id}`}>
+                      <span>{channel.name}</span>
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
