@@ -9,6 +9,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./styles.css";
 import reportWebVitals from "./reportWebVitals.ts";
 import { ThemeProvider } from "./components/theme-provider.tsx";
+import Layout from "./components/layout.tsx";
 
 const queryClient = new QueryClient();
 

@@ -13,6 +13,7 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as ChannelsImport } from './routes/channels'
 import { Route as IndexImport } from './routes/index'
+import { Route as ChannelsChannelIdImport } from './routes/channels.$channelId'
 
 // Create/Update Routes
 
@@ -26,6 +27,12 @@ const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRoute,
+} as any)
+
+const ChannelsChannelIdRoute = ChannelsChannelIdImport.update({
+  id: '/$channelId',
+  path: '/$channelId',
+  getParentRoute: () => ChannelsRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -46,44 +53,66 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ChannelsImport
       parentRoute: typeof rootRoute
     }
+    '/channels/$channelId': {
+      id: '/channels/$channelId'
+      path: '/$channelId'
+      fullPath: '/channels/$channelId'
+      preLoaderRoute: typeof ChannelsChannelIdImport
+      parentRoute: typeof ChannelsImport
+    }
   }
 }
 
 // Create and export the route tree
 
+interface ChannelsRouteChildren {
+  ChannelsChannelIdRoute: typeof ChannelsChannelIdRoute
+}
+
+const ChannelsRouteChildren: ChannelsRouteChildren = {
+  ChannelsChannelIdRoute: ChannelsChannelIdRoute,
+}
+
+const ChannelsRouteWithChildren = ChannelsRoute._addFileChildren(
+  ChannelsRouteChildren,
+)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/channels': typeof ChannelsRoute
+  '/channels': typeof ChannelsRouteWithChildren
+  '/channels/$channelId': typeof ChannelsChannelIdRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/channels': typeof ChannelsRoute
+  '/channels': typeof ChannelsRouteWithChildren
+  '/channels/$channelId': typeof ChannelsChannelIdRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/channels': typeof ChannelsRoute
+  '/channels': typeof ChannelsRouteWithChildren
+  '/channels/$channelId': typeof ChannelsChannelIdRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/channels'
+  fullPaths: '/' | '/channels' | '/channels/$channelId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/channels'
-  id: '__root__' | '/' | '/channels'
+  to: '/' | '/channels' | '/channels/$channelId'
+  id: '__root__' | '/' | '/channels' | '/channels/$channelId'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ChannelsRoute: typeof ChannelsRoute
+  ChannelsRoute: typeof ChannelsRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ChannelsRoute: ChannelsRoute,
+  ChannelsRoute: ChannelsRouteWithChildren,
 }
 
 export const routeTree = rootRoute
@@ -104,7 +133,14 @@ export const routeTree = rootRoute
       "filePath": "index.tsx"
     },
     "/channels": {
-      "filePath": "channels.tsx"
+      "filePath": "channels.tsx",
+      "children": [
+        "/channels/$channelId"
+      ]
+    },
+    "/channels/$channelId": {
+      "filePath": "channels.$channelId.tsx",
+      "parent": "/channels"
     }
   }
 }
