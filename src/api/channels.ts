@@ -3,7 +3,7 @@ const API_BASE_URL = "http://localhost:3001";
 export interface Channel {
   id: number;
   name: string;
-  status: "active" | "closed";
+  status: "active" | "closed" | "unclaimed";
   createdAt: string;
   updatedAt: string;
 }
@@ -14,4 +14,17 @@ export async function fetchChannels(params?: { status?: Channel["status"] }): Pr
     throw new Error("Failed to fetch channels");
   }
   return response.json();
+}
+
+export async function createChannel(name: string) {
+  const response = await fetch(`${API_BASE_URL}/channels`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ channel: { name } }),
+  });
+  if (!response.ok) {
+    throw new Error("Failed to create channel");
+  }
 }

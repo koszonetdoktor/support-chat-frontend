@@ -1,5 +1,6 @@
 import { ChannelsSidebar } from "./channels-sidebar/channels-sidebar";
 import { SidebarProvider, SidebarTrigger } from "./ui/sidebar";
+import { Toaster } from "./ui/sonner";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -11,6 +12,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </div>
         {children}
       </main>
+      <Toaster />
     </SidebarProvider>
   );
 }
