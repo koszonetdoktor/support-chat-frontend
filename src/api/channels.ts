@@ -28,3 +28,20 @@ export async function createChannel(name: string) {
     throw new Error("Failed to create channel");
   }
 }
+
+export async function fetchChannel(channelId: number) {
+  const response = await fetch(`${API_BASE_URL}/channels/${channelId}`);
+  if (!response.ok) {
+    throw new Error("Failed to fetch channel");
+  }
+  return response.json();
+}
+
+export async function claimChannel(channelId: number) {
+  const response = await fetch(`${API_BASE_URL}/channels/${channelId}/claim`, {
+    method: "PUT",
+  });
+  if (!response.ok) {
+    throw new Error("Failed to claim channel");
+  }
+}
